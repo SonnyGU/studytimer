@@ -12,6 +12,7 @@ SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 30
 reps = 0
 my_timer = None
+timer_running = False
 
 
 # ---------------------------- TIMER RESET ------------------------------- #
@@ -19,20 +20,28 @@ my_timer = None
 def reset_it():
     global my_timer
     global reps
+    global timer_running
     window.after_cancel(my_timer)
     header.config(text="Timer", fg=GREEN, font=(FONT_NAME, 50, "bold"), bg=YELLOW)
     canvas.itemconfig(timer_text, text="00:00")
     checks.config(text="")
     reps = 0
+    timer_running = False
+
 
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 def start_timer():
+    global timer_running
+    if timer_running:
+        return
+
     global reps
     reps += 1
     secs = WORK_MIN * 60
     short_breaks = SHORT_BREAK_MIN * 60
     long_breaks = LONG_BREAK_MIN * 60
+    timer_running = True
     if reps % 2 != 0:
         count_down(secs)
         header["text"] = "Working"

@@ -29,7 +29,6 @@ def reset_it():
     timer_running = False
 
 
-
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 def start_timer():
     global timer_running
@@ -38,28 +37,28 @@ def start_timer():
 
     global reps
     reps += 1
-    secs = WORK_MIN * 60
-    short_breaks = SHORT_BREAK_MIN * 60
-    long_breaks = LONG_BREAK_MIN * 60
     timer_running = True
-    if reps % 2 != 0:
-        count_down(secs)
-        header["text"] = "Working"
-    elif reps % 8 == 0:
-        count_down(long_breaks)
+
+    if reps % 8 == 0:
+        count_down(LONG_BREAK_MIN * 60)
         header["text"] = "Long Break!"
         header["fg"] = RED
         reps = 0
     elif reps % 2 == 0:
-        count_down(short_breaks)
+        count_down(SHORT_BREAK_MIN * 60)
         header["text"] = "Short Break"
         header["fg"] = PINK
+    else:
+        count_down(WORK_MIN * 60)
+        header["text"] = "Working"
+        header["fg"] = GREEN
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 def count_down(count):
     global reps
     global my_timer
+    global timer_running
     count_min = math.floor(count / 60)
     count_sec = count % 60
     if count_sec < 10:
@@ -70,6 +69,7 @@ def count_down(count):
     if count > 0:
         my_timer = window.after(1000, count_down, count - 1)
     else:
+        timer_running = False
         start_timer()
         marks = ""
         sessions = math.floor(reps / 2)
